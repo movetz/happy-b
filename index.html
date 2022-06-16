@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            background: #2c2c2c;
+        }
+
+        .game-container {
+            width: 500px;
+            margin: auto;
+            text-align: center;
+        }
+
+        /*.triangle-container {*/
+        /*    width: 500px;*/
+        /*    margin: auto;*/
+        /*    text-align: center;*/
+        /*    border: 1px solid white;*/
+        /*}*/
+        /*.triangle-container:hover .triangle, .triangle-container:active .triangle {*/
+        /*    transform: rotate(-180deg);*/
+        /*}*/
+        .game-container .triangle {
+            fill: transparent;
+            stroke: white;
+            stroke-width: 8;
+            transition: all 0.8s ease-in-out;
+            transform-origin: 250px 250px;
+        }
+
+        .game-element {
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.2s linear;
+            visibility: hidden;
+            height: 0;
+            font-size: 0;
+        }
+
+        .game-element.show {
+            visibility: visible;
+            opacity: 1;
+            height: 100%;
+            font-size: 200px;
+        }
+
+        #start-element-container.show {
+            font-size: 120px;
+            padding-top: 100px;
+        }
+
+        #start-element-container a {
+            text-decoration: none;
+        }
+
+        .prize a {
+            text-decoration: none;
+        }
+        
+
+    </style>
+    <script>
+
+        function reload()
+        {
+            document.location.reload();
+        }
+
+        document.addEventListener("DOMContentLoaded", function(event) {
+
+            const urlSearchParams = new URLSearchParams(window.location.search);
+            const params = Object.fromEntries(urlSearchParams.entries());
+
+            const prizeId = params['t'] === "horse" ? "prize-horse" : "prize-lazer-tag"
+
+
+            document.getElementById("start-element-container").onclick = () => {
+                document.getElementById("start-element-container").classList.remove("show")
+                console.log('works')
+
+                let last = -1;
+                let counter = 0;
+
+                const parts = [
+                    document.getElementById("triangle"),
+                    document.getElementById("square"),
+                    document.getElementById("cycle"),
+                    document.getElementById("cross")
+                ];
+
+                let timeout;
+
+                timeout = setInterval((e) => {
+                    let rand = -1
+
+                    counter++;
+
+                    for (let i in parts) {
+                        parts[i].classList.remove("show");
+                        // parts[i].style.opacity = 0
+                        // parts[i].classList.add("hidden");
+                    }
+
+                    if (counter === 10) {
+                        clearTimeout(timeout)
+                        console.log(last)
+
+                        if (last === 2 || last === 0) {
+                            document.getElementById(prizeId).classList.add("show");
+                        } else {
+                            document.getElementById("prize-duck").classList.add("show");
+                        }
+
+                        return
+                    }
+
+                    while (true) {
+                        rand = Math. random() * 4;
+                        rand = Math. floor(rand);
+
+                        if (rand !== last) {
+                            break
+                        }
+                    }
+
+                    // while (rand !== last) {
+
+                    // console.log(rand)
+                    // }
+
+                    last = rand
+                    // parts[rand].style.opacity = 50
+                    parts[rand].classList.add("show");
+                    // parts[rand].classList.removeClass("hidden");
+
+
+                }, 400)
+            }
+        });
+    </script>
+</head>
+<body>
+<!--<p style="font-size:100px"></p>-->
+<div class="game-container">
+
+    <p id="start-element-container" class="game-element show">
+        <a id="start-element" href="#">
+            &#129409;
+            &#128585;
+            &#129414;
+        </a>
+    </p>
+
+    <p id="prize-horse" class="game-element prize" onclick="reload()">
+        <a href="#">&#127943;</a>
+    </p>
+    <p id="prize-lazer-tag" class="game-element prize" onclick="reload()">
+        <a href="#">&#128299;</a>
+    </p>
+    <p id="prize-duck" class="game-element prize" onclick="reload()">
+        <a href="#">&#129414;</a>
+    </p>
+
+    <svg id="triangle" height="500" width="500" class="game-element">
+        <polygon points="250,100 100,400 400,400" class="triangle" style="stroke: #02aa4e" />
+    </svg>
+
+    <svg  id="square" height="500" width="500" class="game-element">
+        <polygon points="100,100 100,400 400,400 400,100" class="triangle" style="stroke: #f2a142"/>
+    </svg>
+
+    <svg id="cycle" height="500" width="500" class="game-element">
+        <circle cx="250" cy="250" r="150" class="triangle" style="stroke: #07abeb"/>
+    </svg>
+
+    <svg id="cross" height="500" width="500" class="game-element">
+        <line x1="100" y1="100" x2="400" y2="400" class="triangle" style="stroke: #eb2691" />
+        <line x1="100" y1="400" x2="400" y2="100" class="triangle" style="stroke: #eb2691"/>
+    </svg>
+
+</div>
+</body>
+</html>
